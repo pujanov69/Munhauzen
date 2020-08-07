@@ -15,6 +15,43 @@
       },
       "oauth_client": [
         {
+          "client_id": "1063132060675-9ug1pajll03fst6rvmstp02gudbafncs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "en.munchausen.fingertipsandcompany.full",
+            "certificate_hash": "c3e5b76526266f62717ca691e745ae5ba74fa894"
+          }
+        },
+        {
+          "client_id": "1063132060675-hqd1v40odncf6v6fccn3041gn0hodofb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZ4ANng2BFin6MZTfR5-kMb82JvlvOeFk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1063132060675-hqd1v40odncf6v6fccn3041gn0hodofb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1063132060675:android:c5123413cb0d6c5e2d8236",
+        "android_client_info": {
+          "package_name": "ru.munchausen.fingertipsandcompany.full"
+        }
+      },
+      "oauth_client": [
+        {
           "client_id": "1063132060675-hqd1v40odncf6v6fccn3041gn0hodofb.apps.googleusercontent.com",
           "client_type": 3
         }

@@ -2,8 +2,12 @@ buildscript {
     repositories {
         mavenLocal()
         mavenCentral()
-        jcenter()
         google()
+        jcenter()
+
+        maven {
+            url 'https://maven.fabric.io/public'
+        }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
     }
@@ -11,7 +15,8 @@ buildscript {
         //Needed for `apply plugin: "robovm"`
         classpath "com.mobidevelop.robovm:robovm-gradle-plugin:2.3.9"
         //Needed for `apply plugin: "android"`
-        classpath 'com.android.tools.build:gradle:3.3.2'
+        classpath 'com.android.tools.build:gradle:3.1.4'
+        classpath 'com.google.gms:google-services:4.2.0'
     }
 }
 
@@ -26,10 +31,14 @@ allprojects {
     }
 
     repositories {
+        google()
         mavenLocal()
         mavenCentral()
         jcenter()
-        google()
+
+        maven {
+            url 'https://maven.google.com'
+        }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
     }
