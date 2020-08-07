@@ -1,0 +1,60 @@
+gradle.properties
+Elements
+
+.docker
+*.jks
+
+node_modules
+*.csv
+package-lock.json
+obb/en
+obb/Part_1
+obb/Part_2
+obb/Part_demo*
+obb/build
+obb/*.zip
+
+## Robovm
+/ios/robovm-build/
+
+## Android
+/android-*/libs/armeabi/
+/android-*/libs/armeabi-v7a/
+/android-*/libs/arm64-v8a/
+/android-*/libs/x86/
+/android-*/libs/x86_64/
+/android-*/gen/
+/android-*/build
+
+## Gradle
+/local.properties
+.gradle/
+/build/
+/core/build/
+/ios-ru/build/
+/ios-en/build/
+/ios-moe/build/
+
+## OS Specific
+.DS_Store
+Thumbs.db
+.idea/
+*.ipr
+*.iws
+*.iml
+
+## iOS
+/ios-ru/xcode/*.xcodeproj/*
+!/ios-ru/xcode/*.xcodeproj/xcshareddata
+!/ios-ru/xcode/*.xcodeproj/project.pbxproj
+/ios-ru/xcode/native/
+
+/ios-en/xcode/*.xcodeproj/*
+!/ios-en/xcode/*.xcodeproj/xcshareddata
+!/ios-en/xcode/*.xcodeproj/project.pbxproj
+/ios-en/xcode/native/
+
+/ios-moe/xcode/*.xcodeproj/*
+!/ios-moe/xcode/*.xcodeproj/xcshareddata
+!/ios-moe/xcode/*.xcodeproj/project.pbxproj
+/ios-moe/xcode/native/

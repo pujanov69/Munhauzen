@@ -1,0 +1,21 @@
+sourceSets.main.java.srcDirs = [ "src/" ]
+
+sourceCompatibility = '1.7'
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+ext {
+	mainClassName = "ua.gram.munhauzen.IOSLauncher"
+}
+
+launchIPhoneSimulator.dependsOn build
+launchIPadSimulator.dependsOn build
+launchIOSDevice.dependsOn build
+createIPA.dependsOn build
+
+robovm {
+	archs = "thumbv7:arm64"
+
+	//uncomment for running on ios device
+//	iosSignIdentity = IOS_SIGN_IDENTITY_RU
+//	iosProvisioningProfile = IOS_PROVISIONING_PROFILE_RU
+}
