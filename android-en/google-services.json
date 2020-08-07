@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1063132060675",
+    "firebase_url": "https://munhauzen-30e4b.firebaseio.com",
+    "project_id": "munhauzen-30e4b",
+    "storage_bucket": "munhauzen-30e4b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1063132060675:android:a743149ffe7d22112d8236",
+        "android_client_info": {
+          "package_name": "en.munchausen.fingertipsandcompany.full"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1063132060675-hqd1v40odncf6v6fccn3041gn0hodofb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZ4ANng2BFin6MZTfR5-kMb82JvlvOeFk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1063132060675-hqd1v40odncf6v6fccn3041gn0hodofb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
