@@ -8,18 +8,24 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.pay.android.googlebilling.PurchaseManagerGoogleBilling;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.yandex.metrica.YandexMetrica;
 import com.yandex.metrica.YandexMetricaConfig;
 
+import java.io.IOException;
 import java.util.Calendar;
 
 import en.munchausen.fingertipsandcompany.full.BuildConfig;
 import ua.gram.munhauzen.entity.Device;
+import ua.gram.munhauzen.entity.History;
 import ua.gram.munhauzen.translator.EnglishTranslator;
+import ua.gram.munhauzen.utils.ExternalFiles;
 
 public class AndroidLauncher extends AndroidApplication {
 
@@ -27,7 +33,7 @@ public class AndroidLauncher extends AndroidApplication {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        startAlarm();
+
 
 
         try {
@@ -85,14 +91,53 @@ public class AndroidLauncher extends AndroidApplication {
 
 
     private void startAlarm() {
+
+        try {
+            History history = loadHistory();
+            System.out.println("History Data"+ history);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         Calendar c = Calendar.getInstance();
-//        c.add(Calendar.MINUTE, 1);
+        c.add(Calendar.SECOND, 30);
+
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, AlertReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
         if (alarmManager != null) {
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
         }
+    }
+
+    public FileHandle getExternal() {
+        return Gdx.files.external(".Munchausen/en.munchausen.fingertipsandcompany.any/history.json");
+    }
+
+
+    private synchronized History loadHistory() throws IOException {
+        final ObjectMapper om = new ObjectMapper();
+        FileHandle file = getExternal();
+
+        System.out.println("Hisotry file path "+file.path());
+
+        History state = null;
+        if (file.exists()) {
+            String content = file.readString("UTF-8");
+//            Log.e(tag, "history content\n" + content);
+
+            if (content != null && !content.equals("")) {
+                state = om.readValue(content, History.class);
+            } else {
+                state = om.readValue(file.file(), History.class);
+            }
+        }
+
+        if (state == null) {
+            state = new History();
+        }
+
+        return state;
     }
 
     public boolean isTablet(Context context) {
@@ -111,5 +156,12 @@ public class AndroidLauncher extends AndroidApplication {
     public void startActivity(Intent intent, @Nullable Bundle options) {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         super.startActivity(intent, options);
+    }
+
+    @Override
+    protected void onDestroy() {
+        startAlarm();
+        super.onDestroy();
+
     }
 }

@@ -404,6 +404,8 @@ public class DatabaseManager {
     private synchronized History loadHistory() throws IOException {
         FileHandle file = ExternalFiles.getHistoryFile(game.params);
 
+        System.out.println("Hisotry file path "+file.path());
+
         History state = null;
         if (file.exists()) {
             String content = file.readString("UTF-8");
