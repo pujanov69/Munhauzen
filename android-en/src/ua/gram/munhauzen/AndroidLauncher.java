@@ -1,5 +1,7 @@
 package ua.gram.munhauzen;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -13,6 +15,8 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.yandex.metrica.YandexMetrica;
 import com.yandex.metrica.YandexMetricaConfig;
 
+import java.util.Calendar;
+
 import en.munchausen.fingertipsandcompany.full.BuildConfig;
 import ua.gram.munhauzen.entity.Device;
 import ua.gram.munhauzen.translator.EnglishTranslator;
@@ -22,6 +26,9 @@ public class AndroidLauncher extends AndroidApplication {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        startAlarm();
+
 
         try {
             YandexMetrica.activate(getApplicationContext(),
@@ -74,6 +81,18 @@ public class AndroidLauncher extends AndroidApplication {
         PermissionManager.grant(this, PermissionManager.PERMISSIONS);
 
         initialize(new MunhauzenGame(params), config);
+    }
+
+
+    private void startAlarm() {
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.MINUTE, 1);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlertReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+        if (alarmManager != null) {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
+        }
     }
 
     public boolean isTablet(Context context) {
