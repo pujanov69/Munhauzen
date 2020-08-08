@@ -86,7 +86,7 @@ public class AndroidLauncher extends AndroidApplication {
 
     private void startAlarm() {
         Calendar c = Calendar.getInstance();
-        c.add(Calendar.MINUTE, 1);
+//        c.add(Calendar.MINUTE, 1);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, AlertReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
