@@ -16,14 +16,20 @@ import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.pay.android.googlebilling.PurchaseManagerGoogleBilling;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.yandex.metrica.YandexMetrica;
 import com.yandex.metrica.YandexMetricaConfig;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Calendar;
 
 import en.munchausen.fingertipsandcompany.full.BuildConfig;
@@ -39,8 +45,9 @@ public class AndroidLauncher extends AndroidApplication {
         super.onCreate(savedInstanceState);
 
 
-
         startAlarm();
+
+        System.out.println("FCM TOKEN---->" + FirebaseInstanceId.getInstance().getToken());
 
 
         try {
@@ -96,14 +103,31 @@ public class AndroidLauncher extends AndroidApplication {
         initialize(new MunhauzenGame(params), config);
     }
 
+    private String readChapterJsonFile() {
+        String json = null;
+        try {
+            InputStream is = getAssets().open("chapters.json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return json;
 
-    private String readHistoryJsonFile(){
+    }
+
+
+    private String readHistoryJsonFile() {
         try {
             String dfdlk = ".Munchausen/en.munchausen.fingertipsandcompany.any/history.json";
 
             System.out.println("Filedir----->" + getApplicationContext().getFilesDir());
-            System.out.println("ExtFilesdir-->"+ getExternalFilesDir(""));
-            System.out.println("ExternalStorageDirectory--->"+ Environment.getExternalStorageDirectory());
+            System.out.println("ExtFilesdir-->" + getExternalFilesDir(""));
+            System.out.println("ExternalStorageDirectory--->" + Environment.getExternalStorageDirectory());
 
 
             //File file = new File(getExternalFilesDir("").toString(), "my.json");
@@ -112,7 +136,7 @@ public class AndroidLauncher extends AndroidApplication {
             BufferedReader bufferedReader = new BufferedReader(fileReader);
             StringBuilder stringBuilder = new StringBuilder();
             String line = bufferedReader.readLine();
-            while (line != null){
+            while (line != null) {
                 stringBuilder.append(line).append("\n");
                 line = bufferedReader.readLine();
             }
@@ -122,7 +146,7 @@ public class AndroidLauncher extends AndroidApplication {
             System.out.println("Readed Json--->" + responce);
             return responce;
 
-        }catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
 
@@ -135,6 +159,54 @@ public class AndroidLauncher extends AndroidApplication {
 
         String historyJson = readHistoryJsonFile();
 
+        String chapterJson = readChapterJsonFile();
+//        chapterJson = chapterJson.replace("\n", "");
+//        chapterJson = chapterJson.replace("\r", "");
+//        chapterJson = chapterJson.replace(" ", "");
+
+        System.out.println("CHapetr---Jston---->" + chapterJson);
+
+        try {
+            JSONObject history = new JSONObject(historyJson);
+
+            JSONArray visitedChapters = history.getJSONArray("visitedChapters");
+            String[] visitedChaptersArray=new String[visitedChapters.length()];
+
+            int index=0;
+            JSONObject selectedJsonObject=null;
+            JSONArray chapters = new JSONArray(chapterJson);
+            for(int i=0;i<visitedChapters.length();i++){
+                for(int j=0;j<chapters.length();j++){
+                    if(visitedChapters.getString(i).equals(chapters.getJSONObject(j).getString("name"))){
+                        JSONObject jsonObject = chapters.getJSONObject(j);
+                        if(index<jsonObject.getInt("number")) {
+                            index = jsonObject.getInt("number");
+                            selectedJsonObject=jsonObject;
+                        }
+                    }
+
+                }
+            }
+
+            String iconPath=selectedJsonObject.getString("icon");
+            String description=selectedJsonObject.getString("description");
+
+
+            System.out.println("SELECTED_JSONOBJECT"+selectedJsonObject.getString("icon"));
+
+            SharedPreferencesHelper.setIcon(this,iconPath);
+            SharedPreferencesHelper.setDescription(this, description);
+
+
+
+
+
+            System.out.println("String0--->" + visitedChapters.getString(0));
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         Calendar c = Calendar.getInstance();
         c.add(Calendar.SECOND, 30);
 
@@ -145,7 +217,6 @@ public class AndroidLauncher extends AndroidApplication {
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pendingIntent);
         }
     }
-
 
 
     public boolean isTablet(Context context) {
@@ -172,4 +243,11 @@ public class AndroidLauncher extends AndroidApplication {
         super.onDestroy();
 
     }
+
+    @Override
+    protected void onStop() {
+        startAlarm();
+        super.onStop();
+    }
+
 }
