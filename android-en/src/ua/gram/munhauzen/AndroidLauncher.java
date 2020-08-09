@@ -6,7 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
@@ -18,6 +20,9 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.yandex.metrica.YandexMetrica;
 import com.yandex.metrica.YandexMetricaConfig;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Calendar;
 
@@ -34,6 +39,8 @@ public class AndroidLauncher extends AndroidApplication {
         super.onCreate(savedInstanceState);
 
 
+
+        startAlarm();
 
 
         try {
@@ -90,14 +97,43 @@ public class AndroidLauncher extends AndroidApplication {
     }
 
 
+    private String readHistoryJsonFile(){
+        try {
+            String dfdlk = ".Munchausen/en.munchausen.fingertipsandcompany.any/history.json";
+
+            System.out.println("Filedir----->" + getApplicationContext().getFilesDir());
+            System.out.println("ExtFilesdir-->"+ getExternalFilesDir(""));
+            System.out.println("ExternalStorageDirectory--->"+ Environment.getExternalStorageDirectory());
+
+
+            //File file = new File(getExternalFilesDir("").toString(), "my.json");
+            File file = new File(Environment.getExternalStorageDirectory() + "/.Munchausen/en.munchausen.fingertipsandcompany.any", "history.json");
+            FileReader fileReader = new FileReader(file);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            StringBuilder stringBuilder = new StringBuilder();
+            String line = bufferedReader.readLine();
+            while (line != null){
+                stringBuilder.append(line).append("\n");
+                line = bufferedReader.readLine();
+            }
+            bufferedReader.close();
+// This responce will have Json Format String
+            String responce = stringBuilder.toString();
+            System.out.println("Readed Json--->" + responce);
+            return responce;
+
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
+
+        //System.out.println("filepath--->" + getApplicationContext().getFilesDir());
+        return null;
+
+    }
+
     private void startAlarm() {
 
-        try {
-            History history = loadHistory();
-            System.out.println("History Data"+ history);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        String historyJson = readHistoryJsonFile();
 
         Calendar c = Calendar.getInstance();
         c.add(Calendar.SECOND, 30);
@@ -110,35 +146,7 @@ public class AndroidLauncher extends AndroidApplication {
         }
     }
 
-    public FileHandle getExternal() {
-        return Gdx.files.external(".Munchausen/en.munchausen.fingertipsandcompany.any/history.json");
-    }
 
-
-    private synchronized History loadHistory() throws IOException {
-        final ObjectMapper om = new ObjectMapper();
-        FileHandle file = getExternal();
-
-        System.out.println("Hisotry file path "+file.path());
-
-        History state = null;
-        if (file.exists()) {
-            String content = file.readString("UTF-8");
-//            Log.e(tag, "history content\n" + content);
-
-            if (content != null && !content.equals("")) {
-                state = om.readValue(content, History.class);
-            } else {
-                state = om.readValue(file.file(), History.class);
-            }
-        }
-
-        if (state == null) {
-            state = new History();
-        }
-
-        return state;
-    }
 
     public boolean isTablet(Context context) {
         boolean xlarge = ((context.getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == 4);

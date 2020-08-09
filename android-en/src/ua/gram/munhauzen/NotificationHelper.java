@@ -41,7 +41,7 @@ public class NotificationHelper {
 //
 //        mNotificationMgr.notify(1, mBuilder.build());
 
-        sendNotification(context,"title","body");
+        sendNotification(context,"Continue listening","You stopped at Chapter 3");
 
     }
 

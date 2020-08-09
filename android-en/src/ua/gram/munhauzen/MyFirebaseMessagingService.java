@@ -1,5 +1,7 @@
 package ua.gram.munhauzen;
 
+import android.graphics.drawable.Icon;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 
 
@@ -15,6 +17,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if(remoteMessage.getNotification() != null){
             String title = remoteMessage.getNotification().getTitle();
             String body = remoteMessage.getNotification().getBody();
+            Uri uri = remoteMessage.getNotification().getLink();
+
+            System.out.println("Uri---->" + uri);
 
             NotificationHelper.displayNotification(getApplicationContext(), title,body);
         }
