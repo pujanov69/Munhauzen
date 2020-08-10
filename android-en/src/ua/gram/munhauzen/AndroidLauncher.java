@@ -10,7 +10,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -36,8 +35,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.security.Permission;
 import java.util.Calendar;
+import java.util.Objects;
 
 import en.munchausen.fingertipsandcompany.full.BuildConfig;
 import ua.gram.munhauzen.entity.Device;
@@ -56,12 +57,9 @@ public class AndroidLauncher extends AndroidApplication {
 
         PermissionManager.grant(this, PermissionManager.PERMISSIONS);
 
-        if (ContextCompat.checkSelfPermission(AndroidLauncher.this,Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(AndroidLauncher.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},READ_EXTERNAL_STORAGE );
-        }else {
+        if (ContextCompat.checkSelfPermission(AndroidLauncher.this,Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
             startAlarm();
         }
-
 
         System.out.println("FCM TOKEN---->" + FirebaseInstanceId.getInstance().getToken());
 
@@ -127,7 +125,7 @@ public class AndroidLauncher extends AndroidApplication {
             byte[] buffer = new byte[size];
             is.read(buffer);
             is.close();
-            json = new String(buffer, "UTF-8");
+            json = new String(buffer, StandardCharsets.UTF_8);
         } catch (IOException ex) {
             ex.printStackTrace();
             return null;
@@ -136,14 +134,7 @@ public class AndroidLauncher extends AndroidApplication {
 
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode,  String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == READ_EXTERNAL_STORAGE && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-            startAlarm();
-        }
 
-    }
 
     private String readHistoryJsonFile() {
         try {
@@ -212,6 +203,9 @@ public class AndroidLauncher extends AndroidApplication {
                 }
             }
 
+            if (selectedJsonObject == null){
+                return;
+            }
             String iconPath=selectedJsonObject.getString("icon");
             String description=selectedJsonObject.getString("description");
 
@@ -263,7 +257,7 @@ public class AndroidLauncher extends AndroidApplication {
 
     @Override
     protected void onDestroy() {
-        if (ContextCompat.checkSelfPermission(AndroidLauncher.this,Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+        if (ContextCompat.checkSelfPermission(AndroidLauncher.this,Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
             startAlarm();
         }
         super.onDestroy();
@@ -272,7 +266,7 @@ public class AndroidLauncher extends AndroidApplication {
 
     @Override
     protected void onStop() {
-        if (ContextCompat.checkSelfPermission(AndroidLauncher.this,Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+        if (ContextCompat.checkSelfPermission(AndroidLauncher.this,Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
             startAlarm();
         }
         super.onStop();
