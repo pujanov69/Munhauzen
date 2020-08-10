@@ -73,6 +73,7 @@ public class AndroidLauncher extends AndroidApplication {
         }
 
         FirebaseMessaging.getInstance().subscribeToTopic("updates");
+        FirebaseMessaging.getInstance().subscribeToTopic("android-en");
 
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 
